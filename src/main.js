@@ -471,7 +471,7 @@ function escapeHtml(text) {
 // Service Worker registreren voor offline werking
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('./sw.js')
       .then(() => console.log('Purrse: Service Worker geregistreerd'))
       .catch((err) => console.error('Purrse: SW registratie mislukt:', err));
   });

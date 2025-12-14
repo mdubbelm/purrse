@@ -86,6 +86,7 @@ body {
 .splash.hidden {
   opacity: 0;
   visibility: hidden;
+  display: flex !important; /* Override generic .hidden */
 }
 
 .splash-cat {

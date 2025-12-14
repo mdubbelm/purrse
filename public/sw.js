@@ -3,15 +3,14 @@
  * Zorgt voor offline werking
  */
 
-const CACHE_NAME = 'purrse-v1';
-const BASE_PATH = '/purrse';
+const CACHE_NAME = 'purrse-v2';
 const ASSETS_TO_CACHE = [
-  `${BASE_PATH}/`,
-  `${BASE_PATH}/index.html`,
-  `${BASE_PATH}/manifest.json`,
-  `${BASE_PATH}/icons/icon.svg`,
-  `${BASE_PATH}/icons/icon-192.png`,
-  `${BASE_PATH}/icons/icon-512.png`
+  './',
+  './index.html',
+  './manifest.json',
+  './icons/icon.svg',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
 ];
 
 // Installatie - cache assets
