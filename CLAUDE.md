@@ -18,11 +18,11 @@ Te veel plastic pasjes in de portemonnee. Purrse vervangt ze door scanbare barco
 ## Kernfunctionaliteit
 
 ### MVP (Fase 1)
-- [ ] Pasjes toevoegen via camera scanner
-- [ ] Pasjes handmatig toevoegen (fallback)
-- [ ] Lijst van alle pasjes met barcode weergave
-- [ ] Favorieten bovenaan pinnen
-- [ ] Volledig offline werkend
+- [x] Pasjes toevoegen via camera scanner
+- [x] Pasjes handmatig toevoegen (fallback)
+- [x] Lijst van alle pasjes met barcode weergave
+- [x] Favorieten bovenaan pinnen
+- [x] Volledig offline werkend
 
 ### Later (Fase 2+)
 - [ ] Database met bekende winkels (logo's, kleuren)

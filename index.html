@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#CC7700">
+  <meta name="description" content="Purrse - je digitale portemonnee voor loyaltypasjes">
+
+  <title>Purrse</title>
+
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <!-- Creatief lettertype voor de titel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/src/styles/main.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Splash screen met poezenanimatie -->
+    <div id="splash" class="splash">
+      <div class="splash-cat">
+        <div class="purr-container">
+          <span class="purr-text purr-1">purrr</span>
+          <span class="purr-text purr-2">purrr</span>
+          <span class="purr-text purr-3">purrr</span>
+        </div>
+        <svg viewBox="0 0 100 100" class="cat-icon">
+          <!-- Kattenkop -->
+          <ellipse cx="50" cy="55" rx="35" ry="30" fill="#FFB347"/>
+          <!-- Oren -->
+          <polygon points="20,35 30,10 40,35" fill="#FFB347"/>
+          <polygon points="60,35 70,10 80,35" fill="#FFB347"/>
+          <polygon points="24,32 30,15 36,32" fill="#FFD1A3"/>
+          <polygon points="64,32 70,15 76,32" fill="#FFD1A3"/>
+          <!-- Ogen - open -->
+          <g class="cat-eyes">
+            <ellipse cx="35" cy="50" rx="8" ry="10" fill="white"/>
+            <ellipse cx="65" cy="50" rx="8" ry="10" fill="white"/>
+            <ellipse class="pupil" cx="35" cy="52" rx="5" ry="7" fill="#333"/>
+            <ellipse class="pupil" cx="65" cy="52" rx="5" ry="7" fill="#333"/>
+            <circle cx="33" cy="49" r="2" fill="white"/>
+            <circle cx="63" cy="49" r="2" fill="white"/>
+          </g>
+          <!-- Ogen - dicht (voor knipoog) -->
+          <g class="cat-eyes-closed">
+            <path d="M27,50 Q35,55 43,50" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M57,50 Q65,55 73,50" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/>
+          </g>
+          <!-- Neus -->
+          <ellipse cx="50" cy="65" rx="5" ry="4" fill="#FF8C94"/>
+          <!-- Mond -->
+          <path d="M50,69 Q45,75 40,72" stroke="#333" stroke-width="2" fill="none"/>
+          <path d="M50,69 Q55,75 60,72" stroke="#333" stroke-width="2" fill="none"/>
+          <!-- Snorharen -->
+          <g class="whiskers">
+            <line x1="10" y1="60" x2="28" y2="62" stroke="#333" stroke-width="1.5"/>
+            <line x1="10" y1="65" x2="28" y2="65" stroke="#333" stroke-width="1.5"/>
+            <line x1="72" y1="62" x2="90" y2="60" stroke="#333" stroke-width="1.5"/>
+            <line x1="72" y1="65" x2="90" y2="65" stroke="#333" stroke-width="1.5"/>
+          </g>
+        </svg>
+      </div>
+      <h1 class="splash-title">Purrse</h1>
+      <div class="splash-subtitle-container">
+        <svg class="paw-print" viewBox="0 0 100 100" aria-hidden="true">
+          <!-- Grote pad -->
+          <ellipse cx="50" cy="65" rx="25" ry="20" fill="rgba(0,0,0,0.08)"/>
+          <!-- Kleine teentjes -->
+          <ellipse cx="25" cy="35" rx="12" ry="14" fill="rgba(0,0,0,0.08)"/>
+          <ellipse cx="50" cy="25" rx="12" ry="14" fill="rgba(0,0,0,0.08)"/>
+          <ellipse cx="75" cy="35" rx="12" ry="14" fill="rgba(0,0,0,0.08)"/>
+        </svg>
+        <p class="splash-subtitle">Je pasjes, altijd bij de poot</p>
+      </div>
+    </div>
+
+    <!-- Hoofdapp (verborgen tijdens splash) -->
+    <main id="main" class="main hidden">
+      <header class="header">
+        <h1>Purrse</h1>
+        <button id="add-btn" class="btn-add" aria-label="Pasje toevoegen">+</button>
+      </header>
+
+      <div id="cards-container" class="cards-container">
+        <!-- Pasjes komen hier -->
+        <div id="empty-state" class="empty-state">
+          <p>Nog geen pasjes</p>
+          <p class="empty-hint">Tik op + om je eerste pasje toe te voegen</p>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Formulier scherm (inline pagina, geen modal) -->
+    <section id="add-form-screen" class="screen add-form-screen hidden">
+      <header class="form-screen-header">
+        <button id="close-form-btn" class="btn-back" aria-label="Terug">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <h2>Nieuw pasje</h2>
+        <div class="header-spacer"></div>
+      </header>
+
+      <div class="form-content">
+        <!-- Scan knop -->
+        <button type="button" id="open-scanner-btn" class="btn-scan">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+            <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+            <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+            <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+            <line x1="7" y1="12" x2="17" y2="12"></line>
+          </svg>
+          Scan barcode met camera
+        </button>
+
+        <div class="form-divider">
+          <span>of vul handmatig in</span>
+        </div>
+
+        <form id="add-card-form">
+          <div class="form-group">
+            <label for="card-name">Naam winkel</label>
+            <input
+              type="text"
+              id="card-name"
+              name="name"
+              placeholder="Bijv. Albert Heijn"
+              required
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="card-barcode">Barcode nummer</label>
+            <input
+              type="text"
+              id="card-barcode"
+              name="barcode"
+              placeholder="Nummer onder de streepjes"
+              required
+              autocomplete="off"
+              inputmode="numeric"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="card-color">Kleur</label>
+            <div class="color-options">
+              <input type="radio" name="color" id="color-orange" value="#CC7700" checked>
+              <label for="color-orange" class="color-swatch" style="background: #CC7700"></label>
+
+              <input type="radio" name="color" id="color-blue" value="#3B82F6">
+              <label for="color-blue" class="color-swatch" style="background: #3B82F6"></label>
+
+              <input type="radio" name="color" id="color-green" value="#22C55E">
+              <label for="color-green" class="color-swatch" style="background: #22C55E"></label>
+
+              <input type="radio" name="color" id="color-red" value="#EF4444">
+              <label for="color-red" class="color-swatch" style="background: #EF4444"></label>
+
+              <input type="radio" name="color" id="color-purple" value="#8B5CF6">
+              <label for="color-purple" class="color-swatch" style="background: #8B5CF6"></label>
+
+              <input type="radio" name="color" id="color-custom" value="custom">
+              <label for="color-custom" class="color-swatch color-swatch-custom">
+                <input type="color" id="color-picker" value="#FF6B6B" aria-label="Kies een kleur">
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit">Pasje toevoegen</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Scanner scherm -->
+    <section id="scanner-screen" class="screen scanner-screen hidden">
+      <header class="scanner-header">
+        <button id="close-scanner-btn" class="btn-back" aria-label="Terug">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <h2>Scan barcode</h2>
+        <div class="header-spacer"></div>
+      </header>
+
+      <div class="scanner-content">
+        <div id="scanner-viewport"></div>
+        <p class="scanner-hint">Richt de camera op de barcode</p>
+      </div>
+    </section>
+
+    <!-- Barcode scherm (inline pagina, geen modal) -->
+    <section id="barcode-screen" class="screen barcode-screen hidden">
+      <header class="barcode-header">
+        <button id="back-btn" class="btn-back" aria-label="Terug">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <h2 id="barcode-card-name"></h2>
+        <div class="header-spacer"></div>
+      </header>
+
+      <div class="barcode-content">
+        <div class="barcode-wrapper">
+          <svg id="barcode-svg"></svg>
+        </div>
+        <div class="barcode-number" id="barcode-number"></div>
+      </div>
+
+      <footer class="barcode-footer">
+        <button id="favorite-card-btn" class="btn-icon" aria-label="Favoriet">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+        </button>
+        <button id="delete-card-btn" class="btn-icon btn-icon-danger" aria-label="Verwijderen">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+        </button>
+      </footer>
+    </section>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

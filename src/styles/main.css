@@ -1,0 +1,868 @@
+/* Purrse - Main Styles */
+
+:root {
+  /* Poezenthema kleuren - WCAG AA toegankelijk */
+  --color-primary: #CC7700;      /* Donkerder oranje voor tekst/knoppen (5.8:1 contrast) */
+  --color-primary-light: #FFB347; /* Licht oranje voor decoratie zonder tekst */
+  --color-secondary: #FF8C94;    /* Roze accent */
+  --color-background: #FFF9F0;   /* Warm wit */
+  --color-surface: #FFFFFF;
+  --color-text: #333333;
+  --color-text-light: #666666;
+  --color-border: #D4C4B0;       /* Donkerder voor 3:1 contrast */
+  --color-danger: #DC2626;       /* Rood voor verwijderen/destructieve acties */
+  --color-danger-hover: #B91C1C; /* Donkerder rood voor hover */
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  /* Border radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  /* Safe areas voor iPhone notch */
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+}
+
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Focus states - alleen bij keyboard navigatie */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible) {
+  outline: none;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* App container */
+#app {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Splash screen */
+.splash {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.splash.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.splash-cat {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  animation: bounce 1s ease-in-out infinite;
+  margin-top: 60px; /* Ruimte voor purrr teksten */
+}
+
+.cat-icon {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+}
+
+.splash-title {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 3rem;
+  color: white;
+  margin-top: var(--spacing-lg);
+  text-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  letter-spacing: 0.05em;
+}
+
+/* Subtitle container met pootafdruk */
+.splash-subtitle-container {
+  position: relative;
+  margin-top: var(--spacing-md);
+  animation: stamp 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  animation-delay: 0.8s;
+  opacity: 0;
+  transform: scale(2.5) rotate(-5deg);
+}
+
+.paw-print {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  opacity: 0;
+  animation: paw-appear 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  animation-delay: 0.8s;
+}
+
+.splash-subtitle {
+  position: relative;
+  z-index: 1;
+  color: rgba(255,255,255,0.95);
+  font-size: 1.15rem;
+  font-weight: 500;
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+/* Klap/stamp animatie */
+@keyframes stamp {
+  0% {
+    opacity: 0;
+    transform: scale(2.5) rotate(-5deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.9) rotate(1deg);
+  }
+  80% {
+    transform: scale(1.05) rotate(-0.5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes paw-appear {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2);
+  }
+  60% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Kat knipoog animatie */
+.cat-eyes {
+  animation: blink 3s ease-in-out infinite;
+}
+
+.cat-eyes-closed {
+  opacity: 0;
+  animation: blink-closed 3s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 85%, 100% { opacity: 1; }
+  90%, 95% { opacity: 0; }
+}
+
+@keyframes blink-closed {
+  0%, 85%, 100% { opacity: 0; }
+  90%, 95% { opacity: 1; }
+}
+
+/* Snorharen wiebelen */
+.whiskers {
+  transform-origin: center;
+  animation: whisker-twitch 2s ease-in-out infinite;
+}
+
+@keyframes whisker-twitch {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(1deg); }
+  75% { transform: rotate(-1deg); }
+}
+
+/* Purrr tekst container */
+.purr-container {
+  position: absolute;
+  top: -70px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 60px;
+  width: 250px;
+}
+
+/* Purrr teksten */
+.purr-text {
+  position: absolute;
+  font-size: 1.1rem;
+  color: #333;
+  font-style: italic;
+  font-weight: 500;
+  opacity: 0;
+  white-space: nowrap;
+}
+
+/* Purrr 1 - gaat naar links omhoog */
+.purr-1 {
+  left: 50%;
+  top: 50%;
+  animation: purr-left 4s ease-in-out infinite;
+  animation-delay: 0s;
+}
+
+@keyframes purr-left {
+  0%, 50% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.8);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  85% {
+    opacity: 0.7;
+    transform: translate(-180%, -50px) scale(0.7);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-220%, -70px) scale(0.5);
+  }
+}
+
+/* Purrr 2 - gaat omhoog */
+.purr-2 {
+  left: 50%;
+  top: 50%;
+  animation: purr-up 4s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+@keyframes purr-up {
+  0%, 50% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.8);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  85% {
+    opacity: 0.7;
+    transform: translate(-50%, -60px) scale(0.7);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -90px) scale(0.5);
+  }
+}
+
+/* Purrr 3 - gaat naar rechts omhoog */
+.purr-3 {
+  left: 50%;
+  top: 50%;
+  animation: purr-right 4s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+@keyframes purr-right {
+  0%, 50% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.8);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  85% {
+    opacity: 0.7;
+    transform: translate(80%, -50px) scale(0.7);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(120%, -70px) scale(0.5);
+  }
+}
+
+/* Hidden utility */
+.hidden {
+  display: none !important;
+}
+
+/* Main content */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header h1 {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 1.6rem;
+  color: var(--color-primary);
+}
+
+.btn-add {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-primary);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.btn-add:hover {
+  background: var(--color-secondary);
+  transform: scale(1.05);
+}
+
+.btn-add:active {
+  transform: scale(0.95);
+}
+
+/* Cards container */
+.cards-container {
+  flex: 1;
+  padding: var(--spacing-md);
+  overflow-y: auto;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text-light);
+}
+
+.empty-hint {
+  font-size: 0.9rem;
+  margin-top: var(--spacing-sm);
+}
+
+/* Card item */
+.card-item {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.card-item.favorite {
+  border-left: 4px solid var(--color-primary);
+}
+
+.card-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background: var(--color-background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.card-info {
+  flex: 1;
+}
+
+.card-name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.card-barcode-preview {
+  font-size: 0.8rem;
+  color: var(--color-text-light);
+  font-family: monospace;
+}
+
+.card-favorite {
+  color: var(--color-primary);
+  font-size: 1.2rem;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.card-favorite:hover {
+  background: var(--color-background);
+}
+
+.card-favorite:active {
+  transform: scale(0.95);
+}
+
+/* Screens (inline pagina's, geen modals) */
+.screen {
+  position: fixed;
+  inset: 0;
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}
+
+.screen.hidden {
+  display: none;
+}
+
+/* Barcode scherm */
+.barcode-screen {
+  background: var(--color-background);
+}
+
+.barcode-header {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.barcode-header h2 {
+  flex: 1;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: center;
+  margin: 0;
+}
+
+.header-spacer {
+  width: 44px; /* Zelfde breedte als back button voor centrering */
+}
+
+.btn-back {
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.btn-back:hover {
+  background: var(--color-background);
+}
+
+.barcode-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+}
+
+.barcode-wrapper {
+  background: white;
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.barcode-wrapper svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.barcode-number {
+  font-family: monospace;
+  font-size: 1.4rem;
+  letter-spacing: 0.1em;
+  color: var(--color-text);
+  margin-top: var(--spacing-lg);
+  text-align: center;
+}
+
+.barcode-footer {
+  padding: var(--spacing-lg) var(--spacing-xl);
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+/* Subtiele icoon knoppen */
+.btn-icon {
+  width: 56px;
+  height: 56px;
+  border: none;
+  background: none;
+  color: var(--color-text-light);
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.btn-icon:hover {
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+.btn-icon:active {
+  transform: scale(0.95);
+}
+
+/* Favoriet actief */
+.btn-icon.is-favorite {
+  color: var(--color-primary);
+}
+
+.btn-icon.is-favorite svg {
+  fill: var(--color-primary);
+}
+
+/* Danger variant */
+.btn-icon-danger:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--color-danger);
+}
+
+/* Formulier scherm */
+.add-form-screen {
+  background: var(--color-background);
+}
+
+.form-screen-header {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.form-screen-header h2 {
+  flex: 1;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: center;
+  margin: 0;
+}
+
+.form-content {
+  flex: 1;
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Scan knop - secundaire stijl */
+.btn-scan {
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.btn-scan:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+.btn-scan:active {
+  transform: scale(0.98);
+}
+
+/* Divider */
+.form-divider {
+  display: flex;
+  align-items: center;
+  margin: var(--spacing-lg) 0;
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+}
+
+.form-divider::before,
+.form-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.form-divider span {
+  padding: 0 var(--spacing-md);
+}
+
+/* Scanner scherm */
+.scanner-screen {
+  background: #000;
+}
+
+.scanner-header {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: rgba(0, 0, 0, 0.8);
+  position: relative;
+  z-index: 10;
+}
+
+.scanner-header h2 {
+  flex: 1;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  margin: 0;
+}
+
+.scanner-header .btn-back {
+  color: white;
+}
+
+.scanner-header .btn-back:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.scanner-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+#scanner-viewport {
+  width: 100%;
+  max-width: 500px;
+  aspect-ratio: 4/3;
+  background: #111;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+#scanner-viewport video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scanner-hint {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  margin-top: var(--spacing-lg);
+  text-align: center;
+}
+
+/* Form groups */
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text);
+}
+
+.form-group input[type="text"] {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-group input[type="text"]:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+/* Color options */
+.color-options {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.color-options input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.color-swatch {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.color-swatch:hover {
+  transform: scale(1.1);
+}
+
+.color-options input[type="radio"]:checked + .color-swatch {
+  border-color: var(--color-text);
+  transform: scale(1.1);
+}
+
+.color-options input[type="radio"]:focus + .color-swatch {
+  box-shadow: 0 0 0 3px rgba(204, 119, 0, 0.3);
+}
+
+/* Custom color picker swatch */
+.color-swatch-custom {
+  background: conic-gradient(
+    red, yellow, lime, aqua, blue, magenta, red
+  );
+  position: relative;
+  overflow: hidden;
+}
+
+.color-swatch-custom input[type="color"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
+/* Toon gekozen kleur als custom geselecteerd is */
+.color-options input[type="radio"]#color-custom:checked + .color-swatch-custom {
+  background: var(--custom-color, conic-gradient(red, yellow, lime, aqua, blue, magenta, red));
+}
+
+/* Submit button */
+.btn-submit {
+  width: 100%;
+  padding: var(--spacing-md);
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.btn-submit:hover {
+  background: var(--color-secondary);
+}
+
+.btn-submit:active {
+  transform: scale(0.98);
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .cards-container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}

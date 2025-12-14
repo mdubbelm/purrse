@@ -35,18 +35,48 @@ Vandaag de basis neergezet:
 - Projectmap aangemaakt
 - CLAUDE.md geschreven met alle beslissingen
 - Dit devlog gestart
-- Git repository opgezet
+- Git repository opgezet op GitHub
+
+### De eerste pixels
+
+Na het plannen: tijd om te bouwen! Sophie (de Frontend Developer agent) heeft de basis app opgezet:
+
+**Tech keuzes:**
+- Vite als build tool (snel, modern)
+- Vanilla JavaScript (geen framework nodig voor MVP)
+- CSS custom properties voor het poezenthema
+
+**Wat er nu staat:**
+- Splash screen met een schattige oranje kat die zachtjes op en neer beweegt
+- De tekst "Je pasjes, altijd bij de poot" (leuke tagline toch?)
+- Warm kleurenpalet: oranje (#FFB347) als hoofdkleur, roze accent (#FF8C94)
+- Lege staat met "Nog geen pasjes" melding
+- Een + knop om pasjes toe te voegen (doet nog niks)
+
+**Wat ik heb geleerd:**
+1. SVG is perfect voor app icons - schaalt mooi, klein bestandje
+2. `env(safe-area-inset-top)` is nodig voor de iPhone notch
+3. Vite's hot reload is magisch - wijziging → direct zichtbaar
+
+### Testen
+
+De app draait nu lokaal:
+- Desktop: `http://localhost:5173`
+- iPhone (zelfde wifi): `http://192.168.178.119:5173`
 
 ### Volgende stappen
 
-1. Vite project initialiseren
-2. Basis HTML/CSS structuur
+1. ~~Vite project initialiseren~~ ✓
+2. ~~Basis HTML/CSS structuur~~ ✓
 3. IndexedDB service opzetten
 4. Eerste pasje kunnen toevoegen (handmatig)
+5. Pasje weergeven met barcode
 
 ### Reflectie
 
 Het helpt enorm om eerst de vragen te beantwoorden voordat je gaat bouwen. Nu heb ik een helder beeld van de MVP en wat "later" kan.
+
+De splash screen met de kat is nu al leuk om te zien. Het voelt al als een echte app!
 
 ---
 

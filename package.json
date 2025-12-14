@@ -1,0 +1,38 @@
+{
+  "name": "purrse",
+  "version": "1.0.0",
+  "description": "Een digitale portemonnee voor loyaltypasjes. Geen plastic meer, alle pasjes scanbaar in één app.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src/",
+    "test": "echo \"Tests komen later\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdubbelm/purrse.git"
+  },
+  "keywords": [
+    "pwa",
+    "loyalty-cards",
+    "offline"
+  ],
+  "author": "Monique Dubbelman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mdubbelm/purrse/issues"
+  },
+  "homepage": "https://github.com/mdubbelm/purrse#readme",
+  "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^1.2.0",
+    "eslint": "^8.57.0",
+    "vite": "^5.4.0",
+    "vite-plugin-pwa": "^0.20.0"
+  },
+  "dependencies": {
+    "html5-qrcode": "^2.3.8",
+    "jsbarcode": "^3.12.1"
+  }
+}
