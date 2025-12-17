@@ -82,9 +82,22 @@
     <!-- Hoofdapp (verborgen tijdens splash) -->
     <main id="main" class="main hidden">
       <header class="header">
+        <button id="settings-btn" class="btn-settings" aria-label="Instellingen">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
         <h1>Purrse</h1>
         <button id="add-btn" class="btn-add" aria-label="Pasje toevoegen">+</button>
       </header>
+
+      <!-- Update banner -->
+      <div id="update-banner" class="update-banner hidden">
+        <span>Nieuwe versie beschikbaar!</span>
+        <button id="update-btn" class="btn-update">Updaten</button>
+        <button id="dismiss-update-btn" class="btn-dismiss" aria-label="Sluiten">&times;</button>
+      </div>
 
       <div id="cards-container" class="cards-container">
         <!-- Pasjes komen hier -->
@@ -231,6 +244,44 @@
           </svg>
         </button>
       </footer>
+    </section>
+
+    <!-- Instellingen scherm -->
+    <section id="settings-screen" class="screen settings-screen hidden">
+      <header class="form-screen-header">
+        <button id="close-settings-btn" class="btn-back" aria-label="Terug">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <h2>Instellingen</h2>
+        <div class="header-spacer"></div>
+      </header>
+
+      <div class="settings-content">
+        <div class="settings-section">
+          <h3>App</h3>
+          <div class="settings-item">
+            <span>Versie</span>
+            <span id="app-version" class="settings-value">1.0.0</span>
+          </div>
+          <button id="check-update-btn" class="btn-secondary">
+            Check voor updates
+          </button>
+          <p id="update-status" class="settings-status"></p>
+        </div>
+
+        <div class="settings-section">
+          <h3>Over Purrse</h3>
+          <p class="settings-description">
+            Purrse is een digitale portemonnee voor al je loyaltypasjes.
+            Geen plastic meer, alle pasjes scanbaar in één app.
+          </p>
+          <p class="settings-description settings-credits">
+            Gemaakt met 🐱 door Monique
+          </p>
+        </div>
+      </div>
     </section>
   </div>
 

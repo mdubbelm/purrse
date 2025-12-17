@@ -3,7 +3,7 @@
  * Zorgt voor offline werking
  */
 
-const CACHE_NAME = 'purrse-v2';
+const CACHE_NAME = 'purrse-v3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -15,14 +15,22 @@ const ASSETS_TO_CACHE = [
 
 // Installatie - cache assets
 self.addEventListener('install', (event) => {
+  console.log('Purrse: Service Worker installing...');
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log('Purrse: Caching assets...');
       return cache.addAll(ASSETS_TO_CACHE);
     })
   );
-  // Activeer direct zonder te wachten
-  self.skipWaiting();
+  // NIET direct skipWaiting() aanroepen - wacht op gebruiker actie
+});
+
+// Message handler - voor controlled updates
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') {
+    console.log('Purrse: SKIP_WAITING ontvangen, activating...');
+    self.skipWaiting();
+  }
 });
 
 // Activatie - ruim oude caches op
