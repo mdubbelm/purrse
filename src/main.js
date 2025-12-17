@@ -6,6 +6,10 @@ import './styles/main.css';
 import JsBarcode from 'jsbarcode';
 import { Html5Qrcode } from 'html5-qrcode';
 import { addCard, getAllCards, toggleFavorite, deleteCard } from './services/db.js';
+import { detectStore } from './data/stores.js';
+
+// App versie (voor display in settings)
+const APP_VERSION = '1.1.0';
 
 // DOM elementen
 const splash = document.getElementById('splash');
@@ -36,8 +40,29 @@ const colorPicker = document.getElementById('color-picker');
 const colorCustomRadio = document.getElementById('color-custom');
 const colorCustomSwatch = document.querySelector('.color-swatch-custom');
 
+// Form input elementen
+const cardNameInput = document.getElementById('card-name');
+const cardBarcodeInput = document.getElementById('card-barcode');
+
+// Settings scherm elementen
+const settingsBtn = document.getElementById('settings-btn');
+const settingsScreen = document.getElementById('settings-screen');
+const closeSettingsBtn = document.getElementById('close-settings-btn');
+const appVersionEl = document.getElementById('app-version');
+const checkUpdateBtn = document.getElementById('check-update-btn');
+const updateStatusEl = document.getElementById('update-status');
+
+// Update banner elementen
+const updateBanner = document.getElementById('update-banner');
+const updateBtn = document.getElementById('update-btn');
+const dismissUpdateBtn = document.getElementById('dismiss-update-btn');
+
 // Scanner instance
 let html5QrCode = null;
+
+// Service Worker update state
+let waitingServiceWorker = null;
+let swRegistration = null;
 
 // Huidig getoonde kaart
 let currentCardId = null;
@@ -82,6 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape') {
       if (!scannerScreen.classList.contains('hidden')) {
         closeScanner();
+      } else if (!settingsScreen.classList.contains('hidden')) {
+        closeSettings();
       } else if (!barcodeScreen.classList.contains('hidden')) {
         closeBarcodeAndRefresh();
       } else if (!addFormScreen.classList.contains('hidden')) {
@@ -89,6 +116,27 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+
+  // Store detectie bij barcode invoer
+  cardBarcodeInput.addEventListener('blur', handleBarcodeInput);
+  cardBarcodeInput.addEventListener('input', handleBarcodeInput);
+
+  // Settings scherm
+  settingsBtn?.addEventListener('click', openSettings);
+  closeSettingsBtn?.addEventListener('click', closeSettings);
+  checkUpdateBtn?.addEventListener('click', checkForUpdates);
+
+  // Update banner
+  updateBtn?.addEventListener('click', applyUpdate);
+  dismissUpdateBtn?.addEventListener('click', dismissUpdateBanner);
+
+  // Toon versienummer in settings
+  if (appVersionEl) {
+    appVersionEl.textContent = APP_VERSION;
+  }
+
+  // Registreer Service Worker met update detectie
+  registerServiceWorker();
 });
 
 /**
@@ -468,13 +516,224 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// Service Worker registreren voor offline werking
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(() => console.log('Purrse: Service Worker geregistreerd'))
-      .catch((err) => console.error('Purrse: SW registratie mislukt:', err));
+/**
+ * Handle barcode input - detecteer bekende winkel
+ */
+function handleBarcodeInput(e) {
+  const barcode = e.target.value.trim();
+  if (barcode.length < 5) return;
+
+  const store = detectStore(barcode);
+  if (store) {
+    // Auto-fill naam als nog leeg
+    if (!cardNameInput.value.trim()) {
+      cardNameInput.value = store.name;
+    }
+
+    // Selecteer kleur die het dichtst bij de winkelkleur ligt
+    selectClosestColor(store.color);
+  }
+}
+
+/**
+ * Selecteer de kleur optie die het dichtst bij de gegeven kleur ligt
+ */
+function selectClosestColor(targetColor) {
+  const colorOptions = document.querySelectorAll('input[name="color"]');
+  let bestMatch = null;
+  let bestDistance = Infinity;
+
+  colorOptions.forEach(option => {
+    if (option.value === 'custom') return;
+
+    const distance = colorDistance(targetColor, option.value);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      bestMatch = option;
+    }
   });
+
+  // Als geen goede match (afstand > 100), gebruik custom kleur
+  if (bestDistance > 100) {
+    colorCustomRadio.checked = true;
+    colorPicker.value = targetColor;
+    colorCustomSwatch.style.setProperty('--custom-color', targetColor);
+  } else if (bestMatch) {
+    bestMatch.checked = true;
+  }
+}
+
+/**
+ * Bereken kleurafstand (simpele RGB vergelijking)
+ */
+function colorDistance(color1, color2) {
+  const rgb1 = hexToRgb(color1);
+  const rgb2 = hexToRgb(color2);
+  if (!rgb1 || !rgb2) return Infinity;
+
+  return Math.sqrt(
+    Math.pow(rgb1.r - rgb2.r, 2) +
+    Math.pow(rgb1.g - rgb2.g, 2) +
+    Math.pow(rgb1.b - rgb2.b, 2)
+  );
+}
+
+/**
+ * Converteer hex naar RGB
+ */
+function hexToRgb(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
+}
+
+/**
+ * Open instellingen scherm
+ */
+function openSettings() {
+  settingsScreen.classList.remove('hidden');
+}
+
+/**
+ * Sluit instellingen scherm
+ */
+function closeSettings() {
+  settingsScreen.classList.add('hidden');
+}
+
+/**
+ * Registreer Service Worker met update detectie
+ */
+async function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) {
+    console.log('Purrse: Service Workers niet ondersteund');
+    return;
+  }
+
+  try {
+    swRegistration = await navigator.serviceWorker.register('./sw.js');
+    console.log('Purrse: Service Worker geregistreerd');
+
+    // Check voor updates elke 60 minuten
+    setInterval(() => {
+      swRegistration.update();
+    }, 60 * 60 * 1000);
+
+    // Detecteer nieuwe versie
+    swRegistration.addEventListener('updatefound', () => {
+      const newWorker = swRegistration.installing;
+      if (!newWorker) return;
+
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          // Nieuwe versie beschikbaar
+          waitingServiceWorker = newWorker;
+          showUpdateBanner();
+        }
+      });
+    });
+
+    // Check bestaande waiting worker (bij page refresh)
+    if (swRegistration.waiting) {
+      waitingServiceWorker = swRegistration.waiting;
+      showUpdateBanner();
+    }
+  } catch (err) {
+    console.error('Purrse: SW registratie mislukt:', err);
+  }
+}
+
+/**
+ * Pas update toe (met iOS Safari workaround)
+ */
+function applyUpdate() {
+  if (!waitingServiceWorker) {
+    console.log('Purrse: Geen wachtende update');
+    return;
+  }
+
+  // Stuur SKIP_WAITING naar de wachtende Service Worker
+  waitingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
+
+  // iOS Safari workaround: controllerchange event is niet betrouwbaar
+  // Gebruik timeout als fallback
+  let reloaded = false;
+  const timeout = setTimeout(() => {
+    if (!reloaded) {
+      reloaded = true;
+      console.log('Purrse: Reload via timeout (iOS Safari workaround)');
+      window.location.reload();
+    }
+  }, 1500);
+
+  // Luister naar controllerchange (werkt op andere browsers)
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    clearTimeout(timeout);
+    if (!reloaded) {
+      reloaded = true;
+      console.log('Purrse: Reload via controllerchange');
+      window.location.reload();
+    }
+  }, { once: true });
+}
+
+/**
+ * Toon update banner
+ */
+function showUpdateBanner() {
+  if (updateBanner) {
+    updateBanner.classList.remove('hidden');
+  }
+}
+
+/**
+ * Verberg update banner
+ */
+function dismissUpdateBanner() {
+  if (updateBanner) {
+    updateBanner.classList.add('hidden');
+  }
+}
+
+/**
+ * Handmatig checken voor updates
+ */
+async function checkForUpdates() {
+  if (!swRegistration) {
+    updateStatus('Service Worker niet geregistreerd');
+    return;
+  }
+
+  updateStatus('Checken...');
+
+  try {
+    await swRegistration.update();
+
+    // Wacht even om te kijken of er een update is
+    setTimeout(() => {
+      if (swRegistration.waiting || waitingServiceWorker) {
+        updateStatus('Update beschikbaar!');
+        showUpdateBanner();
+      } else {
+        updateStatus('Je hebt de nieuwste versie');
+      }
+    }, 1000);
+  } catch (err) {
+    console.error('Purrse: Update check mislukt:', err);
+    updateStatus('Check mislukt');
+  }
+}
+
+/**
+ * Update status tekst in settings
+ */
+function updateStatus(message) {
+  if (updateStatusEl) {
+    updateStatusEl.textContent = message;
+  }
 }
 
 console.log('Purrse geladen');
