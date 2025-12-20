@@ -31,3 +31,9 @@ coverage/
 # Cache
 .cache/
 .parcel-cache/
+
+# Claude Code (lokaal houden)
+CLAUDE.md
+LEARNINGS.md
+.claude/
+.session-status.json
